@@ -5,6 +5,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import MovieGrid from "./components/MoviesGrid";
 import Book from "./components/Book";
+import ReactDOM from "react-dom";
 
 function App() {
   return (
