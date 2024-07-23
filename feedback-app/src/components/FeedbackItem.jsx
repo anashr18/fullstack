@@ -1,21 +1,24 @@
-import React, { useState } from "react";
+import React from "react";
+import Card from "./shared/Card";
+import PropTypes from "prop-types";
+import { FaTimes } from "react-icons/fa";
+function FeedbackItem({ item, handleDelete }) {
+  // const HandleClick = (item) => {
+  //   console.log(item.id);
+  // };
 
-function FeedbackItem() {
-    const [rating, setRating] = useState(8)
-    const [text, setText] = useState('First feedback Item')
-
-    const handleClick = () => {
-        setRating((prev) => {
-            return prev + 1
-    })
-}
   return (
-    <div className="card">
-        <div className="num-display">{rating}</div>
-        <div className="text-display">{text}</div>
-        <button onClick={handleClick}>Click me</button>
-    </div>
-  )
+    <Card reverse={item.rating % 2 === 0 ? false : true}>
+      <div className="num-display">{item.rating}</div>
+      <button onClick={() => handleDelete(item.id)} className="close">
+        <FaTimes color="purple"></FaTimes>
+      </button>
+      <div className="text-display">{item.text}</div>
+    </Card>
+  );
 }
 
-export default FeedbackItem
+FeedbackItem.propTypes = {
+  item: PropTypes.object.isRequired,
+};
+export default FeedbackItem;
