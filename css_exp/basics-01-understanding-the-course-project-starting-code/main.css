@@ -1,0 +1,27 @@
+body {
+  font-family: monospace;
+}
+#product-overview {
+  background: #ff1b68;
+  color: black;
+  font-family: sans-serif;
+}
+#product-overview h1 {
+  background: orange;
+  color: black;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+h1 {
+  background: #ff1b68;
+  color: white;
+}
+.section-title {
+  color: black;
+  font-family: "Sevillana", cursive;
+  /* background: green; */
+}
+/* .sevillana-regular {
+  font-family: "Sevillana", cursive;
+  font-weight: 400;
+  font-style: normal;
+} */

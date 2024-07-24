@@ -1,11 +1,12 @@
 import React from "react";
 import { useState } from "react";
 
-function RatingSelect() {
+function RatingSelect({ select }) {
   const [selected, setSelected] = useState(10);
   const handleChange = (e) => {
-    // +e is used for converting a string to number
+    // + is used for converting a string to number
     setSelected(+e.currentTarget.value);
+    select(+e.currentTarget.value);
   };
   return (
     <ul className="rating">

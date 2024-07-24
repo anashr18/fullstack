@@ -1,0 +1,27 @@
+body {
+  font-family: sans-serif;
+}
+h1 {
+  color: blueviolet;
+  font-family: sans-serif;
+}
+code {
+  color: red;
+  font-family: monospace;
+}
+.code-green {
+  color: green;
+}
+li {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+/* combinator for sibling..consecutive sibling */
+li + li {
+  background: black;
+  color: white;
+}
+/* descendent siblings */
+ol li {
+  background: black;
+  color: white;
+}
