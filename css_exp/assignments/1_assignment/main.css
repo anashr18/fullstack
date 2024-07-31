@@ -3,7 +3,7 @@ body {
 }
 h1 {
   color: blueviolet;
-  font-family: sans-serif;
+  /* font-family: sans-serif;  */
 }
 code {
   color: red;
@@ -13,7 +13,7 @@ code {
   color: green;
 }
 li {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: inherit;
 }
 /* combinator for sibling..consecutive sibling */
 li + li {
