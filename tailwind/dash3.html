@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Quality Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+    .scrollbar-hide {
+      -ms-overflow-style: none;  /* IE and Edge */
+      scrollbar-width: none;  /* Firefox */
+    }
+  </style>
+</head>
+<body class="bg-gray-100">
+  <div class="min-h-screen flex flex-col">
+    <!-- Header -->
+    <div class="bg-white shadow-md p-4 flex justify-between items-center">
+      <h1 class="text-xl font-semibold">Data Quality Dashboard</h1>
+      <div class="flex items-center space-x-4">
+        <button class="relative focus:outline-none">
+          <span class="bg-red-500 text-white rounded-full h-3 w-3 absolute top-0 right-0"></span>
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V4a2 2 0 10-4 0v1.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 01-6 0v-1m6 0H9"></path>
+          </svg>
+        </button>
+        <button class="focus:outline-none">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A2.05 2.05 0 007 19h10a2.05 2.05 0 001.879-1.196M15 11V7a4 4 0 10-8 0v4m2 0h4"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex flex-wrap p-4 space-y-4 md:space-y-0">
+      <!-- Filters and KPI Section -->
+      <div class="w-full md:w-2/3 bg-white shadow-md p-4 space-y-4">
+        <div class="flex justify-between items-center">
+          <div>Data Sources</div>
+          <div>Filters: Date Range, Data Type, Source Selection, etc.</div>
+        </div>
+        <div class="flex items-center space-x-4 mt-4">
+          <button class="px-4 py-2 bg-gray-200 rounded">Yearly</button>
+          <button class="px-4 py-2 bg-blue-500 text-white rounded">Monthly</button>
+          <button class="px-4 py-2 bg-gray-200 rounded">Weekly</button>
+          <button class="px-4 py-2 bg-gray-200 rounded">Daily</button>
+          <input type="date" class="border rounded px-2 py-1">
+        </div>
+        <div class="relative mt-4">
+          <input type="range" class="w-full">
+          <div class="absolute left-1/2 transform -translate-x-1/2 -translate-y-1/2 top-1/2 bg-red-500 text-white px-2 py-1 rounded-full">Marker for Error</div>
+        </div>
+        <div class="flex flex-col mt-4">
+          <div class="font-semibold">KPIs</div>
+          <div>data set 10,000</div>
+          <div>data sources 4</div>
+          <div>data point 100</div>
+          <div>output 2</div>
+          <div>Accuracy, Completeness, Integrity, and Anomaly detection - as %</div>
+        </div>
+      </div>
+
+      <!-- Sankey Diagram Section -->
+      <div class="w-full md:w-2/3 bg-white shadow-md p-4 mt-4 md:mt-0">
+        <h2 class="text-xl font-semibold mb-4">Sankey Diagram</h2>
+        <div id="sankey-diagram" class="w-full h-64"></div>
+      </div>
+
+      <!-- Data Categories Section -->
+      <div class="w-full md:w-1/3 bg-white shadow-md p-4 mt-4 md:mt-0">
+        <h2 class="text-xl font-semibold mb-4">Data Categories</h2>
+        <div class="overflow-auto scrollbar-hide h-64">
+          <table class="table-auto w-full">
+            <thead>
+              <tr>
+                <th class="px-4 py-2">Category</th>
+                <th class="px-4 py-2">Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="border px-4 py-2">Category 1</td>
+                <td class="border px-4 py-2">+1</td>
+              </tr>
+              <tr>
+                <td class="border px-4 py-2">Category 2</td>
+                <td class="border px-4 py-2">-3</td>
+              </tr>
+              <!-- Add more rows as needed -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="bg-white shadow-md p-4 mt-4">
+      Version Information
+    </div>
+  </div>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3-sankey@0.12.3/dist/d3-sankey.min.js"></script>
+  <script>
+    // Data for the Sankey diagram
+    const data = {
+      nodes: [
+        {name: "A"},
+        {name: "B"},
+        {name: "C"},
+        {name: "D"},
+        {name: "E"}
+      ],
+      links: [
+        {source: 0, target: 1, value: 10},
+        {source: 1, target: 2, value: 15},
+        {source: 2, target: 3, value: 20},
+        {source: 3, target: 4, value: 25},
+        {source: 0, target: 2, value: 5}
+      ]
+    };
+
+    // Set dimensions and margins for the diagram
+    const margin = {top: 10, right: 10, bottom: 10, left: 10},
+          width = document.getElementById('sankey-diagram').offsetWidth - margin.left - margin.right,
+          height = 400 - margin.top - margin.bottom;
+
+    // Append the SVG object to the div
+    const svg = d3.select("#sankey-diagram").append("svg")
+                  .attr("width", width + margin.left + margin.right)
+                  .attr("height", height + margin.top + margin.bottom)
+                  .append("g")
+                  .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    // Set up the Sankey diagram
+    const sankey = d3.sankey()
+                     .nodeWidth(36)
+                     .nodePadding(10)
+                     .size([width, height]);
+
+    const {nodes, links} = sankey(data);
+
+    // Add links
+    svg.append("g")
+       .selectAll("path")
+       .data(links)
+       .enter()
+       .append("path")
+       .attr("d", d3.sankeyLinkHorizontal())
+       .attr("stroke-width", d => d.width)
+       .style("fill", "none")
+       .style("stroke", "#007acc")
+       .style("opacity", 0.5);
+
+    // Add nodes
+    svg.append("g")
+       .selectAll("rect")
+       .data(nodes)
+       .enter()
+       .append("rect")
+       .attr("x", d => d.x0)
+       .attr("y", d => d.y0)
+       .attr("height", d => d.y1 - d.y0)
+       .attr("width", sankey.nodeWidth())
+       .style("fill", "#007acc")
+       .style("stroke", "#000");
+
+    // Add node labels
+    svg.append("g")
+       .selectAll("text")
+       .data(nodes)
+       .enter()
+       .append("text")
+       .attr("x", d => d.x0 - 6)
+       .attr("y", d => (d.y0 + d.y1) / 2)
+       .attr("dy", "0.35em")
+       .attr("text-anchor", "end")
+       .text(d => d.name)
+       .style("fill", "#000");
+
+  </script>
+</body>
+</html>
