@@ -171,4 +171,4 @@ cython_debug/
 .pypirc
 #random folders
 langfuse
-vitereactapp
+# vitereactapp
