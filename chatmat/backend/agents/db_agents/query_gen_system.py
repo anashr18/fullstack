@@ -13,7 +13,7 @@ To submit the final answer DO call only SubmitFinalAnswer .
 
 When generating the query:
 
-Output the SQL query that answers the input question without a tool call.
+Output the SQL query that answers the input question and then call the tool to execute the query. 
 
 Unless the user specifies a specific number of examples they wish to obtain, always limit your query to at most 5 results.
 You can order the results by a relevant column to return the most interesting examples in the database.
@@ -28,11 +28,13 @@ If you have enough information to answer the input question, simply invoke the a
 
 DO NOT make any DML statements (INSERT, UPDATE, DELETE, DROP etc.) to the database."""
 
+
 # Describe a tool to represent the end state
 class SubmitFinalAnswer(BaseModel):
     """Submit the final answer to the user based on the query results."""
 
     final_answer: str = Field(..., description="The final answer to the user")
+
 
 def get_query_gen_system():
     query_gen_prompt = ChatPromptTemplate.from_messages(
@@ -42,5 +44,3 @@ def get_query_gen_system():
         [SubmitFinalAnswer]
     )
     return query_gen
-
-    

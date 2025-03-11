@@ -10,6 +10,7 @@ from agents.workflow.workflow import create_workflow
 from langchain_core.messages import HumanMessage, AIMessage
 from langfuse.callback import CallbackHandler
 from fastapi.responses import JSONResponse
+from pydantic import BaseModel
 
 
 router = APIRouter()
@@ -33,7 +34,7 @@ async def joke_stream(request: Request):
     async def joke_generator():
         try:
             # Convert sync generator to async
-            for message_chunk, metadata in stream_joke_agent(topic):  
+            for message_chunk, metadata in stream_joke_agent(topic):
                 if message_chunk.content:
                     print(f"Sending chunk: {message_chunk.content}")  
                     yield message_chunk.content + " "  
@@ -46,12 +47,13 @@ async def joke_stream(request: Request):
 
 
 
-
+class DBRequest(BaseModel):
+    message: str
+    
 @router.post("/database_service")
-async def db_check(request: Request):
-    data = await request.json()
-    user_msg = data.get("message", "")
-    print(f"user_msg:{user_msg}")
+def db_check(request: DBRequest):
+    user_msg = request.message  # Directly access message field from Pydantic model
+    print(f"user_msg: {user_msg}")
     app = create_workflow()
 
     # Initialize Langfuse CallbackHandler for Langchain (tracing)
