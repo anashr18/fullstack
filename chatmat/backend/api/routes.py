@@ -59,17 +59,12 @@ def db_check(request: DBRequest):
     # Initialize Langfuse CallbackHandler for Langchain (tracing)
     langfuse_handler = CallbackHandler(session_id=100)
     
-    # result = app.invoke({"messages": [("user", "Which sales agent made the most in sales in 2009?")]})
     result = app.invoke(
-        # {"messages": [("user", "Which sales agent made the most in sales in 2009?")]}
-        # {"messages": [HumanMessage(content = "Which sales agent made the most in sales to customers in 2009, also share the sales number and detaails as well?")]},
         {"messages": [HumanMessage(content = user_msg)]},
         config={"callbacks": [langfuse_handler]},
     )
-    answer = result["messages"][-1].tool_calls[0]["args"]["final_answer"]
-    # for s in app.stream({"messages": [HumanMessage(content = "Which sales agent made the most in sales to customers in 2009, also share the sales number and detaails as well?")]},
-    #                   config={"callbacks": [langfuse_handler]}):
-    #     print(s)
-    # Return response as JSON (ensuring frontend handles Markdown)
+    # answer = result["messages"][-1].tool_calls[0]["args"]["final_answer"]
+    last_message = result["messages"][-1]
+    answer = last_message.content
     return JSONResponse(content={"response": answer}, status_code=200)
     # return answer
