@@ -3,6 +3,7 @@ from langchain_community.agent_toolkits import SQLDatabaseToolkit
 from langchain_openai import ChatOpenAI
 from langchain_core.tools import tool
 from database.db_connection import get_db
+from .tool_utils import create_tool_node_with_fallback
 
 def get_tools():
     db = get_db()
@@ -11,19 +12,20 @@ def get_tools():
     return tools
 
 
-# print(list_tables_tool.invoke(""))
 
-# print(get_schema_tool.invoke("Artist"))
 
 def get_list_tables_tool():
     tools = get_tools()
     # print(f"get_list_table_tool {tools}")
     list_tables_tool = next(tool for tool in tools if tool.name == "sql_db_list_tables")
-    return list_tables_tool
+    list_tables = create_tool_node_with_fallback([list_tables_tool])
+    return list_tables
 def get_schema_tool():
+    """Get the schema of tables in database"""
     tools = get_tools()
     schema_tool = next(tool for tool in tools if tool.name == "sql_db_schema")
-    return schema_tool
+    get_schema_tool_with_fallback = create_tool_node_with_fallback([get_schema_tool])
+    return get_schema_tool_with_fallback
 
 
 @tool
@@ -38,6 +40,4 @@ def db_query_tool(query: str) -> str:
     if not result:
         return "Error: Query failed. Please rewrite your query and try again."
     return result
-
-
-# print(db_query_tool.invoke("SELECT * FROM Artist LIMIT 10;"))
+    

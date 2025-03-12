@@ -7,40 +7,33 @@ from pydantic import BaseModel, Field
 # Add a node for a model to generate a query based on the question and schema
 query_gen_system = """You are a SQL expert with a strong attention to detail.
 
-Given an input question, output a syntactically correct SQLite query to run, then look at the results of the query and return the answer.
-May call other tools to get more information about the database schema and tables.
-To submit the final answer DO call only SubmitFinalAnswer .
+You can define SQL queries, analize queries results and interpretate query results to response an answer.
 
-When generating the query:
+Read the messages bellow and identify the user question, table schemas, query stament and query result, or error if they exists.
 
-Output the SQL query that answers the input question and then call the tool to execute the query. 
+1. If there's no a query result that make sense to answer the question, create a syntactically correct SQLite query to answer the user question. DO NOT make any DML statements (INSERT, UPDATE, DELETE, DROP etc.) to the database.
 
-Unless the user specifies a specific number of examples they wish to obtain, always limit your query to at most 5 results.
-You can order the results by a relevant column to return the most interesting examples in the database.
-Never query for all the columns from a specific table, only ask for the relevant columns given the question.
+2. If you create a query, response ONLY the query stament. For example "SELECT id, name FROM pets;"
 
-If you get an error while executing a query, rewrite the query and try again.
+3. If a query was already excuted, but there was an error. Response with the same error message you found. For example: "Error: Pets table doesn't exists"
 
-If you get an empty result set, you should try to rewrite the query to get a non-empty result set. 
-NEVER make stuff up if you don't have enough information to answer the query... just say you don't have enough information.
-
-If you have enough information to answer the input question, simply invoke the appropriate tool to submit the final answer to the user.
-
-DO NOT make any DML statements (INSERT, UPDATE, DELETE, DROP etc.) to the database."""
+4. If a query was alread excuted sucessfully interpretate the reponse and answer the question following this pattern: Answer: <<question answer>>. For example: "Answer: There three cats registered as addopted"
+"""
 
 
-# Describe a tool to represent the end state
-class SubmitFinalAnswer(BaseModel):
-    """Submit the final answer to the user based on the query results."""
+# # Describe a tool to represent the end state
+# class SubmitFinalAnswer(BaseModel):
+#     """Submit the final answer to the user based on the query results."""
 
-    final_answer: str = Field(..., description="The final answer to the user")
+#     final_answer: str = Field(..., description="The final answer to the user")
 
 
-def get_query_gen_system():
+def get_query_gen_chain():
     query_gen_prompt = ChatPromptTemplate.from_messages(
         [("system", query_gen_system), ("placeholder", "{messages}")]
     )
-    query_gen = query_gen_prompt | ChatOpenAI(model="gpt-4o", temperature=0).bind_tools(
-        [SubmitFinalAnswer]
-    )
-    return query_gen
+    # query_gen = query_gen_prompt | ChatOpenAI(model="gpt-4o", temperature=0).bind_tools(
+    #     [SubmitFinalAnswer]
+    # )
+    query_gen_chain = query_gen_prompt | ChatOpenAI(model="gpt-4o", temperature=0)
+    return query_gen_chain
